@@ -1,5 +1,38 @@
 package com.gunder.myidlingresource
 
-import org.junit.Assert.*
+import android.content.Context
+import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
-class MainActivityInstrumentedTest
+
+@RunWith(AndroidJUnit4::class)
+class MainActivityInstrumentedTest {
+    private lateinit var instrumentalTestContext: Context
+
+    @Before
+    fun setUp() {
+        instrumentalTestContext = InstrumentationRegistry.getInstrumentation().targetContext
+        ActivityScenario.launch(MainActivity::class.java)
+    }
+
+    @Test
+    fun checkTest() {
+        onView(withId(R.id.text_view)).check(matches(withText(instrumentalTestContext.getString(R.string.prepare))))
+        onView(withText(instrumentalTestContext.getString(R.string.start))).perform(click())
+        try {
+            Thread.sleep(2000)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+        onView(withId(R.id.text_view)).check(matches(withText(instrumentalTestContext.getString(R.string.delay1))))
+    }
+}
