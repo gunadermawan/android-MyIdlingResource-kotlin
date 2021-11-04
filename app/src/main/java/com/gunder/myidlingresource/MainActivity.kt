@@ -7,7 +7,7 @@ import android.os.Looper
 import com.gunder.myidlingresource.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-//    binding
+    //    binding
     private lateinit var mainBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,8 +19,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun delay1() {
+        EspressoIdlingResource.increment()
         Handler(Looper.getMainLooper()).postDelayed({
             mainBinding.textView.text = getString(R.string.delay1)
-        },2000)
+            if (!EspressoIdlingResource.getEspressoIdlingResource().isIdleNow) {
+//                memberitahu ketikan proses sudah selesai dijalankan
+                EspressoIdlingResource.decrement()
+            }
+        }, 2000)
     }
 }
